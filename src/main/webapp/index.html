@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CurrencyFair</title>
+    <script src="sockjs-0.3.4.js"></script>
+    <script src="stomp.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+
+        function connect() {
+            var socket = new SockJS('/market-trade/statistics');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/updates', function(greeting){
+                    showResponse(greeting.body);
+                });
+                stompClient.send("/app/statistics", {});
+            });
+        }
+
+        function disconnect() {
+            stompClient.disconnect();
+            console.log("Disconnected");
+        }
+
+        function showResponse(message) {
+            processResponse(JSON.parse(message));
+        }
+
+        function processResponse(tableData){
+            var table = document.getElementById("statsTable");
+            clearTable(table);
+            addRow(table, ["Country", "Number of transactions"], true);
+            addRow(table, ["All", tableData["totalTransactions"]]);
+            for(var rowJson in tableData["countryToTotalTransactions"])
+                addRow(table, [rowJson, tableData["countryToTotalTransactions"][rowJson]]);
+        }
+
+        function clearTable(table){
+            var rowCount = table.rows.length;
+            for (var x=rowCount-1; x>=0; x--) {
+                table.deleteRow(x);
+            }
+        }
+
+        function addRow(table, cells, isHeader){
+            var newRow = table.appendChild(document.createElement("tr"));
+            for(var i=0; i<cells.length; i++){
+                var td = newRow.appendChild(document.createElement(isHeader ? "th" : "td"));
+                td.innerHTML = cells[i];
+            }
+        }
+    </script>
+</head>
+<body onload="connect()" onunload="disconnect()">
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div>
+    <table id="statsTable" border="1"/>
+</div>
+</body>
+</html>
