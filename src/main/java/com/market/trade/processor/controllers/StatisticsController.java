@@ -19,7 +19,7 @@ public class StatisticsController {
     @Autowired
     private StatisticsHandler statisticsHandler;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 3000)
     public void sendStatistics() {
         messagingTemplate.convertAndSend("/topic/updates",
                 statisticsHandler.getStatistics());
