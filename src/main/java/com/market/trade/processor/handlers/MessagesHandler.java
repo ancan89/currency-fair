@@ -23,7 +23,7 @@ public class MessagesHandler {
         queue = new ArrayBlockingQueue<>(queueSize);
         workers = new ArrayList<>(20);
         ExecutorService taskExecutor = Executors.newFixedThreadPool(20);
-        for(int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
             ProcessMessageThread runnable = new ProcessMessageThread(queue, statisticsHandler, jdbcTemplate);
             workers.add(runnable);
             taskExecutor.execute(runnable);
@@ -32,6 +32,7 @@ public class MessagesHandler {
 
     /**
      * Puts the transaction requests on a queue that will be processed by the {@link #workers}, enabling the messages consumer with a high speed of message consumption
+     *
      * @param messageRequest the transaction requests to be added to the queue
      */
     public void putOnMessagesQueue(MessageRequest messageRequest) {
@@ -43,11 +44,11 @@ public class MessagesHandler {
     }
 
     /**
-     * Stops all the running workers and flushes theirs buffers into the database
+     * Stops all the running workers and flushes their buffers into the database
      */
     @PreDestroy
     public void flushBufferToDb() {
-        for(ProcessMessageThread runnable : workers) {
+        for (ProcessMessageThread runnable : workers) {
             runnable.setIsRunning(false);
         }
     }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class ProcessMessageThread implements Runnable{
+public class ProcessMessageThread implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(ProcessMessageThread.class);
 
     private BlockingQueue<MessageRequest> queue;
@@ -29,9 +29,9 @@ public class ProcessMessageThread implements Runnable{
     public void run() {
         isRunning = true;
         MessageRequest request = null;
-        while(isRunning) {
+        while (isRunning) {
             try {
-               request = queue.take();
+                request = queue.take();
             } catch (InterruptedException e) {
                 LOGGER.error(e.getMessage(), e);
             }
@@ -42,13 +42,14 @@ public class ProcessMessageThread implements Runnable{
 
     /**
      * Adds a request to a buffer {@link #buffer} that will be flushed into the database once it gets to 50 elements
+     *
      * @param messageRequest the message to be added to the buffer
      */
     private void addRequestToBuffer(MessageRequest messageRequest) {
-        if(messageRequest != null) {
+        if (messageRequest != null) {
             getBuffer().add(messageRequest);
         }
-        if(getBuffer().size() >= 50) {
+        if (getBuffer().size() >= 50) {
             messagesStoreDao.updateMessagesStore(getBuffer());
             getBuffer().clear();
         }
@@ -56,10 +57,11 @@ public class ProcessMessageThread implements Runnable{
 
     /**
      * Getter method for the messages {@link #buffer}
+     *
      * @return the {@link #buffer} or a new instance of it, if the buffer was not initialized
      */
     private List<MessageRequest> getBuffer() {
-        if(buffer == null) {
+        if (buffer == null) {
             buffer = new ArrayList<>();
         }
         return buffer;
@@ -71,8 +73,10 @@ public class ProcessMessageThread implements Runnable{
 
     public void setIsRunning(boolean isRunning) {
         this.isRunning = isRunning;
-        LOGGER.info("Flushing the buffer...");
-        messagesStoreDao.updateMessagesStore(getBuffer());
+        if (!isRunning) {
+            LOGGER.info("Flushing the buffer...");
+            messagesStoreDao.updateMessagesStore(getBuffer());
+        }
     }
 
 }

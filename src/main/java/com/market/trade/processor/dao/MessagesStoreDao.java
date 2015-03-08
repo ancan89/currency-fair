@@ -30,6 +30,7 @@ public class MessagesStoreDao {
 
     /**
      * Inserts a list of requests into the database
+     *
      * @param messageRequests the transactions to be persisted
      */
     public void updateMessagesStore(List<MessageRequest> messageRequests) {
@@ -52,13 +53,14 @@ public class MessagesStoreDao {
                     return messageRequests.size();
                 }
             });
-        }catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error(e);
         }
     }
 
     /**
      * Computes statistics based on the messages that were persisted in the database
+     *
      * @return a map between the name of the originating country of the transactions and the total number of them
      */
     public Map<String, AtomicInteger> getStatisticsFromMessageStore() {

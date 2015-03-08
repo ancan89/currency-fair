@@ -22,15 +22,15 @@ public class StatisticsHandler {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private Map<String, AtomicInteger> countryToTotalTransactions;
-    private MessagesStoreDao dbStatisticsLoader;
 
     /**
      * Updates the statistics holder, {@link #countryToTotalTransactions}, in real-time, once a new transaction request has been received
+     *
      * @param messageRequest the message to be added to the holder
      */
-    public void updateStatistics(MessageRequest messageRequest){
-        if(messageRequest != null) {
-            if(countryToTotalTransactions.containsKey(messageRequest.getOriginatingCountry())) {
+    public void updateStatistics(MessageRequest messageRequest) {
+        if (messageRequest != null) {
+            if (countryToTotalTransactions.containsKey(messageRequest.getOriginatingCountry())) {
                 countryToTotalTransactions.get(messageRequest.getOriginatingCountry()).incrementAndGet();
             } else {
                 countryToTotalTransactions.put(messageRequest.getOriginatingCountry(), new AtomicInteger(1));
@@ -40,12 +40,13 @@ public class StatisticsHandler {
 
     /**
      * Creates a new object that is going to be pushed into the frontend
+     *
      * @return the model to be pushed into the frontend
      */
-    public StatisticsModel getStatistics(){
-        Map<String, String> map  = new HashMap<>();
+    public StatisticsModel getStatistics() {
+        Map<String, String> map = new HashMap<>();
         long totalTransactions = 0;
-        for(Map.Entry<String, AtomicInteger> entry : countryToTotalTransactions.entrySet()) {
+        for (Map.Entry<String, AtomicInteger> entry : countryToTotalTransactions.entrySet()) {
             totalTransactions += entry.getValue().intValue();
             map.put(entry.getKey(), String.valueOf(entry.getValue().intValue()));
         }
@@ -58,7 +59,7 @@ public class StatisticsHandler {
     @PostConstruct
     private void loadStatisticsFromDb() {
         LOGGER.info("Loading statistics from the database...");
-        dbStatisticsLoader = new MessagesStoreDao(jdbcTemplate);
+        MessagesStoreDao dbStatisticsLoader = new MessagesStoreDao(jdbcTemplate);
         countryToTotalTransactions = dbStatisticsLoader.getStatisticsFromMessageStore();
     }
 

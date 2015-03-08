@@ -10,10 +10,10 @@
         function connect() {
             var socket = new SockJS('/market-trade/statistics');
             stompClient = Stomp.over(socket);
-            stompClient.connect({}, function(frame) {
+            stompClient.connect({}, function (frame) {
                 console.log('Connected: ' + frame);
-                stompClient.subscribe('/topic/updates', function(greeting){
-                    showResponse(greeting.body);
+                stompClient.subscribe('/topic/updates', function (response) {
+                    showResponse(response.body);
                 });
                 stompClient.send("/app/statistics", {});
             });
@@ -28,25 +28,25 @@
             processResponse(JSON.parse(message));
         }
 
-        function processResponse(tableData){
+        function processResponse(tableData) {
             var table = document.getElementById("statsTable");
             clearTable(table);
             addRow(table, ["Country", "Number of transactions"], true);
             addRow(table, ["All", tableData["totalTransactions"]]);
-            for(var rowJson in tableData["countryToTotalTransactions"])
+            for (var rowJson in tableData["countryToTotalTransactions"])
                 addRow(table, [rowJson, tableData["countryToTotalTransactions"][rowJson]]);
         }
 
-        function clearTable(table){
+        function clearTable(table) {
             var rowCount = table.rows.length;
-            for (var x=rowCount-1; x>=0; x--) {
+            for (var x = rowCount - 1; x >= 0; x--) {
                 table.deleteRow(x);
             }
         }
 
-        function addRow(table, cells, isHeader){
+        function addRow(table, cells, isHeader) {
             var newRow = table.appendChild(document.createElement("tr"));
-            for(var i=0; i<cells.length; i++){
+            for (var i = 0; i < cells.length; i++) {
                 var td = newRow.appendChild(document.createElement(isHeader ? "th" : "td"));
                 td.innerHTML = cells[i];
             }

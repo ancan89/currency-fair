@@ -12,6 +12,7 @@ public class DateUtils {
 
     /**
      * Converts a String formatted date into a timestamp
+     *
      * @param date the date to be converted
      * @return a timestamp, corresponding to the incoming date
      */
@@ -21,7 +22,7 @@ public class DateUtils {
             Date newDate = simpleDateFormat.parse(date);
             return new Timestamp(newDate.getTime());
         } catch (Exception ex) {
-            if(LOGGER.isDebugEnabled()) {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Unable to convert date string to timestamp: " + date + " * " + ex.getMessage());
             }
             return null;

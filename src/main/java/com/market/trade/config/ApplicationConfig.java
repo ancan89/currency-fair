@@ -17,12 +17,13 @@ public class ApplicationConfig {
 
     @Autowired
     Environment environment;
+
     @Bean
     public MethodInvokingFactoryBean methodInvokingFactoryBean() {
         MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
         methodInvokingFactoryBean.setTargetClass(Log4jConfigurer.class);
         methodInvokingFactoryBean.setTargetMethod("initLogging");
-        methodInvokingFactoryBean.setArguments(new Object[] {"resources/log4j.xml"});
+        methodInvokingFactoryBean.setArguments(new Object[]{"resources/log4j.xml"});
         return methodInvokingFactoryBean;
     }
 

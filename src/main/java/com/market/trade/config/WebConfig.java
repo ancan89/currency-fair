@@ -10,7 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 @Configuration
 @EnableWebMvc
-@Import({ DatabaseConfig.class, ApplicationConfig.class, WebSocketConfig.class })
+@Import({DatabaseConfig.class, ApplicationConfig.class, WebSocketConfig.class})
 public class WebConfig extends WebMvcConfigurationSupport {
 
     @Bean
